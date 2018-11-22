@@ -37,11 +37,11 @@ int main() {
 
 	BMP bmp6(403, 305, false);
 	bmp6.fill_region(0, 0, 50, 50, 0, 0, 255, 0);
-	bmp6.write("dump.bmp");
+	bmp6.write("test6.bmp");
 
-	BMP bmp7("dump.bmp");
+	BMP bmp7("test6.bmp");
 	bmp7.fill_region(0, 0, 40, 40, 255, 0, 0, 0);
-	bmp7.write("dump2.bmp");
+	bmp7.write("test6_2.bmp");
 
 	BMP bmp8(200, 200, false);
 	bmp8.fill_region(0, 0, 100, 100, 255, 0, 255, 255);
