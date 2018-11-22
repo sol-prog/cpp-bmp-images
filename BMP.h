@@ -52,6 +52,9 @@ struct BMP {
         std::ifstream inp{ fname, std::ios_base::binary };
         if (inp) {
             inp.read((char*)&file_header, sizeof(file_header));
+            if(file_header.file_type != 0x4D42) {
+                throw std::runtime_error("Error! Unrecognized file format.");
+            }
             inp.read((char*)&bmp_info_header, sizeof(bmp_info_header));
 
             // The BMPColorHeader is used only for transparent images
@@ -59,9 +62,11 @@ struct BMP {
                 // Check if the file has bit mask color information
                 if(bmp_info_header.size >= (sizeof(BMPInfoHeader) + sizeof(BMPColorHeader))) {
                     inp.read((char*)&bmp_color_header, sizeof(bmp_color_header));
+                    // Check if the pixel data is stored as BGRA and if the color space type is sRGB
+                    check_color_header(bmp_color_header);
                 } else {
-                    std::cerr << "Warning! The file \"" << fname << "\" does not seem to contain bit mask information\n";
-                    throw std::runtime_error("Error! I don't know how to read this file.");
+                    std::cerr << "Error! The file \"" << fname << "\" does not seem to contain bit mask information\n";
+                    throw std::runtime_error("Error! Unrecognized file format.");
                 }
             }
 
@@ -85,7 +90,7 @@ struct BMP {
 
             data.resize(bmp_info_header.width * bmp_info_header.height * bmp_info_header.bit_count / 8);
 
-            // Here we check if we need take into account row padding
+            // Here we check if we need to take into account row padding
             if (bmp_info_header.width % 4 == 0) {
                 inp.read((char*)data.data(), data.size());
                 file_header.file_size += data.size();
@@ -210,5 +215,19 @@ private:
             new_stride++;
         }
         return new_stride;
+    }
+
+    // Check if the pixel data is stored as BGRA and if the color space type is sRGB
+    void check_color_header(BMPColorHeader &bmp_color_header) {
+        BMPColorHeader expected_color_header;
+        if(expected_color_header.red_mask != bmp_color_header.red_mask ||
+            expected_color_header.blue_mask != bmp_color_header.blue_mask ||
+            expected_color_header.green_mask != bmp_color_header.green_mask ||
+            expected_color_header.alpha_mask != bmp_color_header.alpha_mask) {
+            throw std::runtime_error("Unexpected color mask format! The program expects the pixel data to be in the BGRA format");
+        }
+        if(expected_color_header.color_space_type != bmp_color_header.color_space_type) {
+            throw std::runtime_error("Unexpected color space type! The program expects sRGB values");
+        }
     }
 };
