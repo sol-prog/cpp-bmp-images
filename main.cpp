@@ -37,13 +37,17 @@ int main() {
 
 	BMP bmp6(403, 305, false);
 	bmp6.fill_region(0, 0, 50, 50, 0, 0, 255, 0);
-	bmp6.write("img_test_a.bmp");
+	bmp6.write("dump.bmp");
 
-	BMP bmp7("img_test_a.bmp");
+	BMP bmp7("dump.bmp");
 	bmp7.fill_region(0, 0, 40, 40, 255, 0, 0, 0);
-	bmp7.write("img_test_a_2.bmp");
+	bmp7.write("dump2.bmp");
 
 	BMP bmp8(200, 200, false);
 	bmp8.fill_region(0, 0, 100, 100, 255, 0, 255, 255);
 	bmp8.write("img_test_24bits_3.bmp");
+
+	BMP bmp11("test_pnet.bmp");
+	bmp11.fill_region(0, 0, 100, 100, 255, 0, 255, 255);
+	bmp11.write("test_pnet_copy.bmp");
 }

@@ -56,7 +56,13 @@ struct BMP {
 
             // The BMPColorHeader is used only for transparent images
             if(bmp_info_header.bit_count == 32) {
-                inp.read((char*)&bmp_color_header, sizeof(bmp_color_header));
+                // Check if the file has bit mask color information
+                if(bmp_info_header.size >= (sizeof(BMPInfoHeader) + sizeof(BMPColorHeader))) {
+                    inp.read((char*)&bmp_color_header, sizeof(bmp_color_header));
+                } else {
+                    std::cerr << "Warning! The file \"" << fname << "\" does not seem to contain bit mask information\n";
+                    throw std::runtime_error("Error! I don't know how to read this file.");
+                }
             }
 
             // Jump to the pixel data location
