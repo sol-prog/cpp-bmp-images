@@ -1,3 +1,16 @@
+/*
+    From https://solarianprogrammer.com/2018/11/19/cpp-reading-writing-bmp-images/
+    and https://github.com/sol-prog/cpp-bmp-images
+
+    sol-prog/cpp-bmp-images is licensed under the GNU General Public License v3.0
+
+    Permissions of this strong copyleft license are conditioned on making available complete source code of licensed works and modifications, 
+    which include larger works using a licensed work, under the same license. 
+    Copyright and license notices must be preserved. Contributors provide an express grant of patent rights.
+
+    Copyright © 2019 - Paul Silisteanu
+*/
+
 #pragma once
 #include <fstream>
 #include <vector>
@@ -190,6 +203,18 @@ struct BMP {
                 }
             }
         }
+    }
+
+    void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t w, uint32_t h, 
+                        uint8_t B, uint8_t G, uint8_t R, uint8_t A, uint8_t line_w) {
+        if (x0 + w > (uint32_t)bmp_info_header.width || y0 + h > (uint32_t)bmp_info_header.height) {
+            throw std::runtime_error("The rectangle does not fit in the image!");
+        }
+
+        fill_region(x0, y0, w, line_w, B, G, R, A);                                             // top line
+        fill_region(x0, (y0 + h - line_w), w, line_w, B, G, R, A);                              // bottom line
+        fill_region((x0 + w - line_w), (y0 + line_w), line_w, (h - (2 * line_w)), B, G, R, A);  // right line
+        fill_region(x0, (y0 + line_w), line_w, (h - (2 * line_w)), B, G, R, A);                 // left line
     }
 
 private:
