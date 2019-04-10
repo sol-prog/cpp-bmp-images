@@ -192,6 +192,18 @@ struct BMP {
         }
     }
 
+    void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t w, uint32_t h, 
+                        uint8_t B, uint8_t G, uint8_t R, uint8_t A, uint8_t line_w) {
+        if (x0 + w > (uint32_t)bmp_info_header.width || y0 + h > (uint32_t)bmp_info_header.height) {
+            throw std::runtime_error("The rectangle does not fit in the image!");
+        }
+
+        fill_region(x0, y0, w, line_w, B, G, R, A);                                             // top line
+        fill_region(x0, (y0 + h - line_w), w, line_w, B, G, R, A);                              // bottom line
+        fill_region((x0 + w - line_w), (y0 + line_w), line_w, (h - (2 * line_w)), B, G, R, A);  // right line
+        fill_region(x0, (y0 + line_w), line_w, (h - (2 * line_w)), B, G, R, A);                 // left line
+    }
+
 private:
     uint32_t row_stride{ 0 };
 
