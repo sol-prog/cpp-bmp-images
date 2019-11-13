@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
 #pragma pack(push, 1)
 struct BMPFileHeader {
@@ -192,7 +193,7 @@ struct BMP {
         }
     }
 
-    void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t w, uint32_t h, 
+    void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t w, uint32_t h,
                         uint8_t B, uint8_t G, uint8_t R, uint8_t A, uint8_t line_w) {
         if (x0 + w > (uint32_t)bmp_info_header.width || y0 + h > (uint32_t)bmp_info_header.height) {
             throw std::runtime_error("The rectangle does not fit in the image!");
