@@ -193,6 +193,20 @@ struct BMP {
         }
     }
 
+    void set_pixel(uint32_t x0, uint32_t y0, uint8_t B, uint8_t G, uint8_t R, uint8_t A) {
+        if (x0 > (uint32_t)bmp_info_header.width || y0 > (uint32_t)bmp_info_header.height) {
+            throw std::runtime_error("The point is outside the image boundaries!");
+        }
+
+        uint32_t channels = bmp_info_header.bit_count / 8;
+        data[channels * (y0 * bmp_info_header.width + x0) + 0] = B;
+        data[channels * (y0 * bmp_info_header.width + x0) + 1] = G;
+        data[channels * (y0 * bmp_info_header.width + x0) + 2] = R;
+        if (channels == 4) {
+            data[channels * (y0 * bmp_info_header.width + x0) + 3] = A;
+        }
+    }
+
     void draw_rectangle(uint32_t x0, uint32_t y0, uint32_t w, uint32_t h,
                         uint8_t B, uint8_t G, uint8_t R, uint8_t A, uint8_t line_w) {
         if (x0 + w > (uint32_t)bmp_info_header.width || y0 + h > (uint32_t)bmp_info_header.height) {
