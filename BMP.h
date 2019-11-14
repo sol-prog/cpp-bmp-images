@@ -94,7 +94,7 @@ struct BMP {
             // Here we check if we need to take into account row padding
             if (bmp_info_header.width % 4 == 0) {
                 inp.read((char*)data.data(), data.size());
-                file_header.file_size += data.size();
+                file_header.file_size += static_cast<uint32_t>(data.size());
             }
             else {
                 row_stride = bmp_info_header.width * bmp_info_header.bit_count / 8;
@@ -105,7 +105,7 @@ struct BMP {
                     inp.read((char*)(data.data() + row_stride * y), row_stride);
                     inp.read((char*)padding_row.data(), padding_row.size());
                 }
-                file_header.file_size += data.size() + bmp_info_header.height * padding_row.size();
+                file_header.file_size += static_cast<uint32_t>(data.size()) + bmp_info_header.height * static_cast<uint32_t>(padding_row.size());
             }
         }
         else {
@@ -140,7 +140,7 @@ struct BMP {
             data.resize(row_stride * height);
 
             uint32_t new_stride = make_stride_aligned(4);
-            file_header.file_size = file_header.offset_data + data.size() + bmp_info_header.height * (new_stride - row_stride);
+            file_header.file_size = file_header.offset_data + static_cast<uint32_t>(data.size()) + bmp_info_header.height * (new_stride - row_stride);
         }
     }
 
